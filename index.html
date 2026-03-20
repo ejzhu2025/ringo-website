@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ringo — AI Phone Host for Restaurants</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#D4A853',
+            'gold-light': '#F0C96E',
+            dark: '#0A0A0A',
+            'dark-2': '#121212',
+            'dark-3': '#1C1C1C',
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #D4A853 0%, #F0C96E 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .gold-border { border: 1px solid rgba(212, 168, 83, 0.25); }
+    .gold-border-hover { transition: border-color 0.3s ease, transform 0.3s ease; }
+    .gold-border-hover:hover { border-color: rgba(212, 168, 83, 0.6); transform: translateY(-4px); }
+    html { scroll-behavior: smooth; }
+    .phone-pulse { animation: phonePulse 2s ease-in-out infinite; }
+    @keyframes phonePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(212, 168, 83, 0.5); }
+      50% { box-shadow: 0 0 0 18px rgba(212, 168, 83, 0); }
+    }
+    .nav-blur {
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(10, 10, 10, 0.85);
+    }
+    .hero-glow {
+      background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(212, 168, 83, 0.15), transparent);
+    }
+    input, select, textarea {
+      background: #1C1C1C;
+      border: 1px solid rgba(212, 168, 83, 0.2);
+      color: white;
+      transition: border-color 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: rgba(212, 168, 83, 0.6);
+    }
+    select option { background: #1C1C1C; }
+    .step-line::after {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: calc(50% + 40px);
+      width: calc(100% - 80px);
+      height: 1px;
+      background: linear-gradient(90deg, rgba(212,168,83,0.4), rgba(212,168,83,0.1));
+    }
+    @media (max-width: 768px) { .step-line::after { display: none; } }
+  </style>
+</head>
+<body class="bg-dark text-white antialiased">
+
+<!-- ═══════════════════════════════ NAV ═══════════════════════════════ -->
+<nav class="fixed top-0 w-full z-50 nav-blur border-b border-white/5">
+  <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-dark font-black text-sm">R</div>
+      <span class="font-bold text-lg tracking-tight">Ringo</span>
+    </div>
+    <!-- Right -->
+    <div class="flex items-center gap-3">
+      <!-- Language Toggle -->
+      <button id="langToggle" onclick="toggleLang()"
+        class="text-sm font-medium px-3 py-1.5 rounded-full border border-white/20 hover:border-gold/50 transition-colors text-white/70 hover:text-white">
+        中文
+      </button>
+      <a href="#onboard"
+        class="text-sm font-semibold px-4 py-2 rounded-full bg-gold text-dark hover:bg-gold-light transition-colors">
+        <span data-key="nav_start">Get Started</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<section class="hero-glow min-h-screen flex items-center justify-center pt-16">
+  <div class="max-w-4xl mx-auto px-6 text-center py-24">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-gold/30 bg-gold/5 text-gold text-sm font-medium mb-8">
+      <span class="w-2 h-2 rounded-full bg-gold animate-pulse"></span>
+      <span data-key="hero_badge">AI Phone Host for Restaurants</span>
+    </div>
+    <h1 class="text-5xl md:text-7xl font-black leading-tight mb-6 tracking-tight">
+      <span data-key="hero_title_1">Never Miss a</span><br />
+      <span class="gradient-text" data-key="hero_title_2">Reservation Again.</span>
+    </h1>
+    <p class="text-lg md:text-xl text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed" data-key="hero_sub">
+      Ringo is your AI phone host — answering every call, booking tables, and speaking your guests' language. 24/7, no staff required.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="tel:+16692015051"
+        class="phone-pulse inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full bg-gold text-dark font-bold text-base hover:bg-gold-light transition-colors">
+        📞 <span data-key="hero_cta1">Call & Experience Ringo</span>
+      </a>
+      <a href="#onboard"
+        class="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-full border border-white/20 hover:border-gold/50 font-semibold text-base transition-colors">
+        <span data-key="hero_cta2">Get Started Free</span> →
+      </a>
+    </div>
+    <p class="text-white/30 text-sm mt-6" data-key="hero_note">No credit card required · Setup in under 5 minutes</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ STATS ═══════════════════════════════ -->
+<section class="py-16 border-y border-white/5">
+  <div class="max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+    <div>
+      <div class="text-5xl font-black gradient-text mb-2">62%</div>
+      <div class="text-white/50 text-sm leading-relaxed" data-key="stat1">of calls go unanswered during peak hours</div>
+    </div>
+    <div class="md:border-x border-white/10">
+      <div class="text-5xl font-black gradient-text mb-2">$2,400</div>
+      <div class="text-white/50 text-sm leading-relaxed" data-key="stat2">avg monthly revenue lost from missed reservations</div>
+    </div>
+    <div>
+      <div class="text-5xl font-black gradient-text mb-2" data-key="stat3_num">&lt;5 min</div>
+      <div class="text-white/50 text-sm leading-relaxed" data-key="stat3">to set up your AI phone host</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ HOW IT WORKS ═══════════════════════ -->
+<section class="py-24">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-black mb-3" data-key="hiw_title">How It Works</h2>
+      <p class="text-white/50" data-key="hiw_sub">Three simple steps to never miss a call again</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <!-- Step 1 -->
+      <div class="relative text-center step-line">
+        <div class="w-12 h-12 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center text-gold font-black text-lg mx-auto mb-5">1</div>
+        <h3 class="font-bold text-lg mb-2" data-key="step1_title">Tell us about your restaurant</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="step1_desc">Fill out a quick form with your restaurant details, hours, and preferences.</p>
+      </div>
+      <!-- Step 2 -->
+      <div class="relative text-center step-line">
+        <div class="w-12 h-12 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center text-gold font-black text-lg mx-auto mb-5">2</div>
+        <h3 class="font-bold text-lg mb-2" data-key="step2_title">Forward your phone</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="step2_desc">Set up call forwarding on your existing number. Ringo answers after your chosen ring time.</p>
+      </div>
+      <!-- Step 3 -->
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-full bg-gold/10 border border-gold/40 flex items-center justify-center text-gold font-black text-lg mx-auto mb-5">3</div>
+        <h3 class="font-bold text-lg mb-2" data-key="step3_title">AI answers every call</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="step3_desc">Ringo books reservations, handles cancellations, and speaks your guests' language — automatically.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FEATURES ═══════════════════════════ -->
+<section class="py-24 bg-dark-2">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <h2 class="text-4xl font-black" data-key="feat_title">Everything Your Host Does, Automated</h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="p-6 rounded-2xl bg-dark-3 gold-border gold-border-hover">
+        <div class="text-3xl mb-4">📞</div>
+        <h3 class="font-bold text-base mb-2" data-key="f1_t">24/7 Call Answering</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="f1_d">Never send a caller to voicemail again. Ringo picks up every call, every time.</p>
+      </div>
+      <div class="p-6 rounded-2xl bg-dark-3 gold-border gold-border-hover">
+        <div class="text-3xl mb-4">📅</div>
+        <h3 class="font-bold text-base mb-2" data-key="f2_t">Smart Reservation Booking</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="f2_d">Books tables in real-time, checks availability, and sends confirmation texts.</p>
+      </div>
+      <div class="p-6 rounded-2xl bg-dark-3 gold-border gold-border-hover">
+        <div class="text-3xl mb-4">🌍</div>
+        <h3 class="font-bold text-base mb-2" data-key="f3_t">Multilingual Support</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="f3_d">Speaks English, Chinese, Spanish, and more — automatically matches your guest's language.</p>
+      </div>
+      <div class="p-6 rounded-2xl bg-dark-3 gold-border gold-border-hover">
+        <div class="text-3xl mb-4">❌</div>
+        <h3 class="font-bold text-base mb-2" data-key="f4_t">Cancellation Handling</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="f4_d">Gracefully handles cancellations and modifications without you lifting a finger.</p>
+      </div>
+      <div class="p-6 rounded-2xl bg-dark-3 gold-border gold-border-hover">
+        <div class="text-3xl mb-4">📊</div>
+        <h3 class="font-bold text-base mb-2" data-key="f5_t">Booking Dashboard</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="f5_d">See all reservations in one place. Get notified for every booking and cancellation.</p>
+      </div>
+      <div class="p-6 rounded-2xl bg-dark-3 gold-border gold-border-hover">
+        <div class="text-3xl mb-4">🔗</div>
+        <h3 class="font-bold text-base mb-2" data-key="f6_t">Square Integration</h3>
+        <p class="text-white/50 text-sm leading-relaxed" data-key="f6_d">Syncs directly with Square so your bookings are always up to date.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ DEMO ════════════════════════════════ -->
+<section class="py-24">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <div class="p-12 rounded-3xl bg-gradient-to-b from-gold/10 to-transparent border border-gold/20">
+      <div class="text-5xl mb-6">🎙️</div>
+      <h2 class="text-4xl font-black mb-4" data-key="demo_title">Hear Ringo in Action</h2>
+      <p class="text-white/50 text-lg mb-8" data-key="demo_sub">
+        Call our demo line and experience a real conversation with Ringo.
+      </p>
+      <a href="tel:+16692015051"
+        class="phone-pulse inline-flex items-center justify-center gap-3 px-8 py-5 rounded-full bg-gold text-dark font-black text-lg hover:bg-gold-light transition-colors mb-6">
+        📞 &nbsp;<span data-key="demo_btn">Call Now &nbsp;·&nbsp; 669-201-5051</span>
+      </a>
+      <p class="text-white/30 text-sm" data-key="demo_note">
+        Available 24/7 · No setup required · Just call and say "I'd like to make a reservation"
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ ONBOARDING FORM ═════════════════════ -->
+<section id="onboard" class="py-24 bg-dark-2">
+  <div class="max-w-2xl mx-auto px-6">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-black mb-3" data-key="form_title">Get Ringo for Your Restaurant</h2>
+      <p class="text-white/50" data-key="form_sub">Fill out the form below and we'll get you set up within 24 hours.</p>
+    </div>
+
+    <!-- Replace YOUR_FORMSPREE_ID with your actual Formspree form ID from formspree.io -->
+    <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" class="space-y-5">
+      <!-- Hidden fields -->
+      <input type="hidden" name="_subject" value="New Ringo Restaurant Signup" />
+      <input type="hidden" name="_replyto" value="ejzhu2025@gmail.com" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5" data-key="f_restaurant">Restaurant Name</label>
+          <input type="text" name="restaurant_name" required placeholder="Golden Dragon"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5" data-key="f_contact">Your Name</label>
+          <input type="text" name="contact_name" required placeholder="John Chen"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5" data-key="f_email">Email Address</label>
+          <input type="email" name="email" required placeholder="you@restaurant.com"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5" data-key="f_phone">Restaurant Phone Number</label>
+          <input type="tel" name="phone" required placeholder="(415) 000-0000"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5" data-key="f_system">Current Reservation System</label>
+          <select name="reservation_system" class="w-full px-4 py-3 rounded-xl text-sm">
+            <option value="" data-key="f_sys0">Select...</option>
+            <option value="opentable">OpenTable</option>
+            <option value="resy">Resy</option>
+            <option value="square">Square</option>
+            <option value="toast">Toast</option>
+            <option value="phone_only" data-key="f_sys5">Phone only (no system)</option>
+            <option value="other" data-key="f_sys6">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5" data-key="f_ring">Ring time before Ringo answers</label>
+          <select name="ring_timeout" class="w-full px-4 py-3 rounded-xl text-sm">
+            <option value="5" data-key="f_ring1">5 seconds</option>
+            <option value="10" data-key="f_ring2">10 seconds</option>
+            <option value="15" selected data-key="f_ring3">15 seconds</option>
+            <option value="20" data-key="f_ring4">20 seconds</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm text-white/50 mb-1.5" data-key="f_notes">Anything else we should know?</label>
+        <textarea name="notes" rows="3" placeholder="e.g. We're a sushi restaurant open Mon–Sat, 5pm–10pm. Max party size 8."
+          class="w-full px-4 py-3 rounded-xl text-sm resize-none"></textarea>
+      </div>
+
+      <button type="submit"
+        class="w-full py-4 rounded-xl bg-gold text-dark font-black text-base hover:bg-gold-light transition-colors">
+        <span data-key="f_submit">Launch My AI Host →</span>
+      </button>
+
+      <p class="text-center text-white/30 text-xs" data-key="f_privacy">
+        We'll reach out within 24 hours to complete setup. No credit card required.
+      </p>
+    </form>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
+<footer class="py-10 border-t border-white/5">
+  <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-gold to-gold-light flex items-center justify-center text-dark font-black text-xs">R</div>
+      <span class="font-bold text-sm">Ringo</span>
+    </div>
+    <p class="text-white/30 text-sm" data-key="footer_copy">© 2026 Ringo · AI Phone Host for Restaurants</p>
+    <div class="flex items-center gap-4 text-white/30 text-sm">
+      <a href="mailto:ejzhu2025@gmail.com" class="hover:text-white transition-colors">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════ i18n SCRIPT ══════════════════════════ -->
+<script>
+  const T = {
+    en: {
+      nav_start:    "Get Started",
+      hero_badge:   "AI Phone Host for Restaurants",
+      hero_title_1: "Never Miss a",
+      hero_title_2: "Reservation Again.",
+      hero_sub:     "Ringo is your AI phone host — answering every call, booking tables, and speaking your guests' language. 24/7, no staff required.",
+      hero_cta1:    "Call & Experience Ringo",
+      hero_cta2:    "Get Started Free",
+      hero_note:    "No credit card required · Setup in under 5 minutes",
+      stat1:        "of calls go unanswered during peak hours",
+      stat2:        "avg monthly revenue lost from missed reservations",
+      stat3_num:    "<5 min",
+      stat3:        "to set up your AI phone host",
+      hiw_title:    "How It Works",
+      hiw_sub:      "Three simple steps to never miss a call again",
+      step1_title:  "Tell us about your restaurant",
+      step1_desc:   "Fill out a quick form with your restaurant details, hours, and preferences.",
+      step2_title:  "Forward your phone",
+      step2_desc:   "Set up call forwarding on your existing number. Ringo answers after your chosen ring time.",
+      step3_title:  "AI answers every call",
+      step3_desc:   "Ringo books reservations, handles cancellations, and speaks your guests' language — automatically.",
+      feat_title:   "Everything Your Host Does, Automated",
+      f1_t: "24/7 Call Answering",       f1_d: "Never send a caller to voicemail again. Ringo picks up every call, every time.",
+      f2_t: "Smart Reservation Booking", f2_d: "Books tables in real-time, checks availability, and sends confirmation texts.",
+      f3_t: "Multilingual Support",      f3_d: "Speaks English, Chinese, Spanish, and more — automatically matches your guest's language.",
+      f4_t: "Cancellation Handling",     f4_d: "Gracefully handles cancellations and modifications without you lifting a finger.",
+      f5_t: "Booking Dashboard",         f5_d: "See all reservations in one place. Get notified for every booking and cancellation.",
+      f6_t: "Square Integration",        f6_d: "Syncs directly with Square so your bookings are always up to date.",
+      demo_title: "Hear Ringo in Action",
+      demo_sub:   "Call our demo line and experience a real conversation with Ringo.",
+      demo_btn:   "Call Now · 669-201-5051",
+      demo_note:  'Available 24/7 · No setup required · Just call and say "I\'d like to make a reservation"',
+      form_title: "Get Ringo for Your Restaurant",
+      form_sub:   "Fill out the form below and we'll get you set up within 24 hours.",
+      f_restaurant: "Restaurant Name",
+      f_contact:    "Your Name",
+      f_email:      "Email Address",
+      f_phone:      "Restaurant Phone Number",
+      f_system:     "Current Reservation System",
+      f_sys0:       "Select...",
+      f_sys5:       "Phone only (no system)",
+      f_sys6:       "Other",
+      f_ring:       "Ring time before Ringo answers",
+      f_ring1: "5 seconds", f_ring2: "10 seconds", f_ring3: "15 seconds", f_ring4: "20 seconds",
+      f_notes:    "Anything else we should know?",
+      f_submit:   "Launch My AI Host →",
+      f_privacy:  "We'll reach out within 24 hours to complete setup. No credit card required.",
+      footer_copy: "© 2026 Ringo · AI Phone Host for Restaurants",
+    },
+    cn: {
+      nav_start:    "立即开始",
+      hero_badge:   "餐厅 AI 电话接待员",
+      hero_title_1: "再也不错过",
+      hero_title_2: "每一个预约。",
+      hero_sub:     "Ringo 是您的 AI 电话接待员 — 全天候接听来电、自动预约订座、支持多语言沟通，无需额外员工。",
+      hero_cta1:    "拨打体验 Ringo",
+      hero_cta2:    "免费开始使用",
+      hero_note:    "无需信用卡 · 5 分钟内完成配置",
+      stat1:        "的来电在高峰时段无人接听",
+      stat2:        "餐厅每月因错过预约损失的平均营收",
+      stat3_num:    "<5 分钟",
+      stat3:        "即可完成 AI 接待员的配置",
+      hiw_title:    "三步即可上线",
+      hiw_sub:      "简单三步，让每一个来电都被接听",
+      step1_title:  "填写餐厅信息",
+      step1_desc:   "填写一份简单表单，包括餐厅名称、营业时间和偏好设置。",
+      step2_title:  "设置电话转接",
+      step2_desc:   "在您现有号码上设置呼叫转移。Ringo 将在您设定的等待时间后自动接听。",
+      step3_title:  "AI 接听每一个来电",
+      step3_desc:   "Ringo 自动完成预约、取消、改期，并用来电者的语言交流。",
+      feat_title:   "接待员能做的，Ringo 全部自动完成",
+      f1_t: "24/7 全天候接听",   f1_d: "再也不让来电进入语音信箱。Ringo 随时待命，每个电话都接。",
+      f2_t: "智能预约管理",       f2_d: "实时查询可用座位，完成预约并发送确认短信。",
+      f3_t: "多语言支持",         f3_d: "支持英语、中文、西班牙语等，自动匹配来电者语言。",
+      f4_t: "取消与改期处理",     f4_d: "优雅处理取消和修改请求，无需人工干预。",
+      f5_t: "预约管理后台",       f5_d: "所有预约一目了然，每次预约和取消均可收到通知。",
+      f6_t: "Square 系统集成",   f6_d: "与 Square 直接同步，预约信息始终保持最新。",
+      demo_title: "亲身体验 Ringo",
+      demo_sub:   "拨打我们的演示电话，与 Ringo 进行一次真实对话。",
+      demo_btn:   "立即拨打 · 669-201-5051",
+      demo_note:  "24小时可拨 · 无需任何设置 · 拨通后说「我想预约」即可",
+      form_title: "为您的餐厅接入 Ringo",
+      form_sub:   "填写以下表单，我们将在 24 小时内完成配置。",
+      f_restaurant: "餐厅名称",
+      f_contact:    "您的姓名",
+      f_email:      "电子邮箱",
+      f_phone:      "餐厅电话",
+      f_system:     "当前使用的预约系统",
+      f_sys0:       "请选择...",
+      f_sys5:       "仅电话（无预约系统）",
+      f_sys6:       "其他",
+      f_ring:       "Ringo 接听前的等待时间",
+      f_ring1: "5 秒", f_ring2: "10 秒", f_ring3: "15 秒", f_ring4: "20 秒",
+      f_notes:    "其他需要告知的信息（如特殊营业时间、菜系类型等）",
+      f_submit:   "启动我的 AI 接待员 →",
+      f_privacy:  "我们将在 24 小时内联系您完成配置。无需信用卡。",
+      footer_copy: "© 2026 Ringo · 餐厅 AI 电话接待员",
+    }
+  };
+
+  let currentLang = 'en';
+
+  function toggleLang() {
+    currentLang = currentLang === 'en' ? 'cn' : 'en';
+    document.getElementById('langToggle').textContent = currentLang === 'en' ? '中文' : 'English';
+    document.documentElement.lang = currentLang === 'en' ? 'en' : 'zh';
+    applyTranslations();
+  }
+
+  function applyTranslations() {
+    const t = T[currentLang];
+    document.querySelectorAll('[data-key]').forEach(el => {
+      const key = el.getAttribute('data-key');
+      if (t[key] !== undefined) el.innerHTML = t[key];
+    });
+  }
+</script>
+
+</body>
+</html>
