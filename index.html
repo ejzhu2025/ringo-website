@@ -287,83 +287,299 @@
 <section id="onboard" class="py-24 bg-dark-2">
   <div class="max-w-2xl mx-auto px-6">
     <div class="text-center mb-12">
-      <h2 class="text-4xl font-black mb-3" data-key="form_title">Get Ringo for Your Restaurant</h2>
-      <p class="text-white/50" data-key="form_sub">Fill out the form below and we'll get you set up within 24 hours.</p>
+      <h2 class="text-4xl font-black mb-3">Get Ringo for Your Restaurant</h2>
+      <p class="text-white/50">Set up your AI phone host in minutes — no technical skills needed.</p>
     </div>
 
-    <!-- Replace YOUR_FORMSPREE_ID with your actual Formspree form ID from formspree.io -->
-    <form action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST" class="space-y-5">
-      <!-- Hidden fields -->
-      <input type="hidden" name="_subject" value="New Ringo Restaurant Signup" />
-      <input type="hidden" name="_replyto" value="ejzhu2025@gmail.com" />
+    <!-- Step indicators -->
+    <div class="flex items-center justify-center gap-3 mb-10" id="step-indicators">
+      <div class="flex items-center gap-2">
+        <div id="dot-1" class="w-7 h-7 rounded-full bg-gold text-dark font-black text-xs flex items-center justify-center">1</div>
+        <span class="text-sm text-white/70">Your Info</span>
+      </div>
+      <div class="w-8 h-px bg-white/20"></div>
+      <div class="flex items-center gap-2">
+        <div id="dot-2" class="w-7 h-7 rounded-full bg-white/10 text-white/40 font-black text-xs flex items-center justify-center">2</div>
+        <span class="text-sm text-white/40" id="label-2">Review</span>
+      </div>
+      <div class="w-8 h-px bg-white/20"></div>
+      <div class="flex items-center gap-2">
+        <div id="dot-3" class="w-7 h-7 rounded-full bg-white/10 text-white/40 font-black text-xs flex items-center justify-center">3</div>
+        <span class="text-sm text-white/40" id="label-3">Go Live</span>
+      </div>
+    </div>
 
+    <!-- ── STEP 1: Basic Info ── -->
+    <div id="step-1" class="space-y-5">
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label class="block text-sm text-white/50 mb-1.5" data-key="f_restaurant">Restaurant Name</label>
-          <input type="text" name="restaurant_name" required placeholder="Golden Dragon"
+          <label class="block text-sm text-white/50 mb-1.5">Restaurant Name *</label>
+          <input id="ob-name" type="text" required placeholder="Golden Dragon"
             class="w-full px-4 py-3 rounded-xl text-sm" />
         </div>
         <div>
-          <label class="block text-sm text-white/50 mb-1.5" data-key="f_contact">Your Name</label>
-          <input type="text" name="contact_name" required placeholder="John Chen"
+          <label class="block text-sm text-white/50 mb-1.5">Restaurant Website URL *</label>
+          <input id="ob-url" type="url" required placeholder="https://goldendragonsf.com"
             class="w-full px-4 py-3 rounded-xl text-sm" />
         </div>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div>
-          <label class="block text-sm text-white/50 mb-1.5" data-key="f_email">Email Address</label>
-          <input type="email" name="email" required placeholder="you@restaurant.com"
-            class="w-full px-4 py-3 rounded-xl text-sm" />
-        </div>
-        <div>
-          <label class="block text-sm text-white/50 mb-1.5" data-key="f_phone">Restaurant Phone Number</label>
-          <input type="tel" name="phone" required placeholder="(415) 000-0000"
-            class="w-full px-4 py-3 rounded-xl text-sm" />
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div>
-          <label class="block text-sm text-white/50 mb-1.5" data-key="f_system">Current Reservation System</label>
-          <select name="reservation_system" class="w-full px-4 py-3 rounded-xl text-sm">
-            <option value="" data-key="f_sys0">Select...</option>
-            <option value="opentable">OpenTable</option>
-            <option value="resy">Resy</option>
+          <label class="block text-sm text-white/50 mb-1.5">POS System</label>
+          <select id="ob-pos" class="w-full px-4 py-3 rounded-xl text-sm">
+            <option value="none">None / Other</option>
             <option value="square">Square</option>
             <option value="toast">Toast</option>
-            <option value="phone_only" data-key="f_sys5">Phone only (no system)</option>
-            <option value="other" data-key="f_sys6">Other</option>
+            <option value="clover">Clover</option>
           </select>
         </div>
         <div>
-          <label class="block text-sm text-white/50 mb-1.5" data-key="f_ring">Ring time before Ringo answers</label>
-          <select name="ring_timeout" class="w-full px-4 py-3 rounded-xl text-sm">
-            <option value="5" data-key="f_ring1">5 seconds</option>
-            <option value="10" data-key="f_ring2">10 seconds</option>
-            <option value="15" selected data-key="f_ring3">15 seconds</option>
-            <option value="20" data-key="f_ring4">20 seconds</option>
+          <label class="block text-sm text-white/50 mb-1.5">Reservation System</label>
+          <select id="ob-res" class="w-full px-4 py-3 rounded-xl text-sm">
+            <option value="none">None / Phone only</option>
+            <option value="square">Square</option>
+            <option value="opentable">OpenTable</option>
+            <option value="resy">Resy</option>
           </select>
         </div>
       </div>
 
-      <div>
-        <label class="block text-sm text-white/50 mb-1.5" data-key="f_notes">Anything else we should know?</label>
-        <textarea name="notes" rows="3" placeholder="e.g. We're a sushi restaurant open Mon–Sat, 5pm–10pm. Max party size 8."
-          class="w-full px-4 py-3 rounded-xl text-sm resize-none"></textarea>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5">Your Name *</label>
+          <input id="ob-contact" type="text" required placeholder="John Chen"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5">Restaurant Phone *</label>
+          <input id="ob-phone" type="tel" required placeholder="(415) 000-0000"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
       </div>
 
-      <button type="submit"
-        class="w-full py-4 rounded-xl bg-gold text-dark font-black text-base hover:bg-gold-light transition-colors">
-        <span data-key="f_submit">Launch My AI Host →</span>
-      </button>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5">Email *</label>
+          <input id="ob-email" type="email" required placeholder="you@restaurant.com"
+            class="w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+        <div>
+          <label class="block text-sm text-white/50 mb-1.5">Ring time before Ringo answers</label>
+          <select id="ob-ring" class="w-full px-4 py-3 rounded-xl text-sm">
+            <option value="5">5 seconds</option>
+            <option value="10">10 seconds</option>
+            <option value="15" selected>15 seconds</option>
+            <option value="20">20 seconds</option>
+          </select>
+        </div>
+      </div>
 
-      <p class="text-center text-white/30 text-xs" data-key="f_privacy">
-        We'll reach out within 24 hours to complete setup. No credit card required.
-      </p>
-    </form>
+      <button id="btn-fetch" onclick="doFetch()"
+        class="w-full py-4 rounded-xl bg-gold text-dark font-black text-base hover:bg-gold-light transition-colors">
+        Fetch Restaurant Info →
+      </button>
+      <p class="text-center text-white/30 text-xs">We'll auto-pull your menu & hours from your website. No credit card required.</p>
+    </div>
+
+    <!-- ── STEP 2: Review ── -->
+    <div id="step-2" class="hidden space-y-5">
+      <div class="rounded-2xl border border-white/10 p-5 bg-dark space-y-4">
+        <h3 class="text-white font-bold text-lg">Review Your Restaurant Info</h3>
+        <p class="text-white/40 text-sm">We pulled this from your website. Edit anything before going live.</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-white/40 mb-1">Restaurant Name</label>
+            <input id="rev-name" type="text" class="w-full px-3 py-2 rounded-lg text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs text-white/40 mb-1">Address</label>
+            <input id="rev-address" type="text" class="w-full px-3 py-2 rounded-lg text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs text-white/40 mb-1">Cuisine</label>
+            <input id="rev-cuisine" type="text" class="w-full px-3 py-2 rounded-lg text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs text-white/40 mb-1">Max Party Size</label>
+            <input id="rev-party" type="number" min="1" max="50" class="w-full px-3 py-2 rounded-lg text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-white/40 mb-1">Menu Categories Found</label>
+          <div id="rev-menu" class="text-sm text-white/60 bg-dark-3 rounded-lg px-3 py-2 min-h-8"></div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-white/40 mb-1">Special Instructions for Ringo (optional)</label>
+          <textarea id="rev-special" rows="2" placeholder="e.g. We close early on Sundays. No split bills."
+            class="w-full px-3 py-2 rounded-lg text-sm resize-none"></textarea>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <button onclick="goStep(1)"
+          class="flex-1 py-3 rounded-xl border border-white/20 text-white/60 text-sm font-semibold hover:border-white/40 transition-colors">
+          ← Back
+        </button>
+        <button id="btn-confirm" onclick="doConfirm()"
+          class="flex-2 flex-grow py-3 rounded-xl bg-gold text-dark font-black text-base hover:bg-gold-light transition-colors">
+          Go Live! →
+        </button>
+      </div>
+    </div>
+
+    <!-- ── STEP 3: Success ── -->
+    <div id="step-3" class="hidden text-center space-y-6">
+      <div class="text-6xl">🎉</div>
+      <h3 class="text-2xl font-black text-white">You're Live!</h3>
+      <p class="text-white/50">Ringo is ready to answer calls for <span id="live-name" class="text-gold font-semibold"></span>.</p>
+
+      <div class="rounded-2xl border border-gold/30 bg-gold/5 p-6 text-left space-y-3">
+        <p class="text-sm text-white/50">Your dedicated Ringo phone number:</p>
+        <p id="live-number" class="text-2xl font-black text-gold tracking-wide"></p>
+        <p class="text-xs text-white/30">Forward your restaurant's calls to this number, or use it directly.</p>
+      </div>
+
+      <div id="square-connect-block" class="hidden rounded-2xl border border-white/10 p-5 space-y-3">
+        <p class="text-sm text-white/70 font-semibold">Connect your Square account</p>
+        <p class="text-xs text-white/40">Link Square so Ringo can create real orders and reservations in your system.</p>
+        <a id="square-connect-btn" href="#"
+          class="inline-block px-6 py-3 rounded-xl bg-white text-dark font-black text-sm hover:bg-gray-100 transition-colors">
+          Connect Square →
+        </a>
+      </div>
+
+      <p class="text-white/30 text-sm">Questions? Email us at <a href="mailto:support@get-ringo.com" class="text-gold hover:underline">support@get-ringo.com</a></p>
+    </div>
+
+    <!-- Error banner -->
+    <div id="ob-error" class="hidden mt-4 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm"></div>
   </div>
 </section>
+
+<script>
+const API = 'https://voice-booking-agent-983680558370.us-central1.run.app';
+let _fetchedData = {};
+let _restaurantId = null;
+
+function goStep(n) {
+  [1,2,3].forEach(i => {
+    document.getElementById('step-'+i).classList.toggle('hidden', i !== n);
+    const dot = document.getElementById('dot-'+i);
+    if (i < n) {
+      dot.className = 'w-7 h-7 rounded-full bg-gold/40 text-gold font-black text-xs flex items-center justify-center';
+    } else if (i === n) {
+      dot.className = 'w-7 h-7 rounded-full bg-gold text-dark font-black text-xs flex items-center justify-center';
+    } else {
+      dot.className = 'w-7 h-7 rounded-full bg-white/10 text-white/40 font-black text-xs flex items-center justify-center';
+    }
+  });
+  document.getElementById('ob-error').classList.add('hidden');
+}
+
+function showError(msg) {
+  const el = document.getElementById('ob-error');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+
+async function doFetch() {
+  const name = document.getElementById('ob-name').value.trim();
+  const url  = document.getElementById('ob-url').value.trim();
+  if (!name || !url) return showError('Please fill in restaurant name and website URL.');
+  if (!document.getElementById('ob-contact').value.trim()) return showError('Please enter your name.');
+  if (!document.getElementById('ob-phone').value.trim()) return showError('Please enter the restaurant phone number.');
+  if (!document.getElementById('ob-email').value.trim()) return showError('Please enter your email.');
+
+  const btn = document.getElementById('btn-fetch');
+  btn.textContent = 'Fetching info…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(API + '/api/v1/onboard/fetch', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({source: 'website', url})
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.detail || 'Failed to fetch restaurant info');
+
+    _fetchedData = json.data || {};
+
+    // Populate review form
+    document.getElementById('rev-name').value    = _fetchedData.name    || name;
+    document.getElementById('rev-address').value = _fetchedData.address || '';
+    document.getElementById('rev-cuisine').value = _fetchedData.cuisine || '';
+    document.getElementById('rev-party').value   = _fetchedData.max_party_size || '';
+
+    const cats = (_fetchedData.menu || []).map(c => c.category).filter(Boolean);
+    document.getElementById('rev-menu').textContent = cats.length
+      ? cats.join(' · ')
+      : 'No menu found — you can add it later from your dashboard.';
+
+    goStep(2);
+  } catch(e) {
+    showError(e.message);
+  } finally {
+    btn.textContent = 'Fetch Restaurant Info →';
+    btn.disabled = false;
+  }
+}
+
+async function doConfirm() {
+  const btn = document.getElementById('btn-confirm');
+  btn.textContent = 'Setting up…';
+  btn.disabled = true;
+
+  try {
+    const payload = {
+      name:                 document.getElementById('rev-name').value.trim(),
+      address:              document.getElementById('rev-address').value.trim() || _fetchedData.address,
+      cuisine:              document.getElementById('rev-cuisine').value.trim() || _fetchedData.cuisine,
+      max_party_size:       parseInt(document.getElementById('rev-party').value) || _fetchedData.max_party_size,
+      special_instructions: document.getElementById('rev-special').value.trim() || null,
+      hours:                _fetchedData.hours  || null,
+      menu:                 _fetchedData.menu   || null,
+      original_phone:       document.getElementById('ob-phone').value.trim(),
+      pos_system:           document.getElementById('ob-pos').value,
+      reservation_system:   document.getElementById('ob-res').value,
+      ring_timeout:         parseInt(document.getElementById('ob-ring').value),
+      owner_name:           document.getElementById('ob-contact').value.trim(),
+      owner_email:          document.getElementById('ob-email').value.trim(),
+      website:              document.getElementById('ob-url').value.trim(),
+    };
+
+    const res = await fetch(API + '/api/v1/onboard/confirm', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.detail || 'Failed to complete setup');
+
+    _restaurantId = json.restaurant_id || json.id;
+    document.getElementById('live-name').textContent   = payload.name;
+    document.getElementById('live-number').textContent = json.twilio_number || 'Provisioning…';
+
+    // Show Square connect button if pos_system = square
+    if (payload.pos_system === 'square' && _restaurantId) {
+      document.getElementById('square-connect-block').classList.remove('hidden');
+      document.getElementById('square-connect-btn').href =
+        API + '/oauth/square/start?restaurant_id=' + _restaurantId;
+    }
+
+    goStep(3);
+  } catch(e) {
+    showError(e.message);
+  } finally {
+    btn.textContent = 'Go Live! →';
+    btn.disabled = false;
+  }
+}
+</script>
 
 <!-- ═══════════════════════════════ FOOTER ═══════════════════════════════ -->
 <footer class="py-10 border-t border-white/5">
