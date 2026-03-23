@@ -312,8 +312,8 @@
     <!-- ── STEP 1: URL only ── -->
     <div id="step-1" class="space-y-5">
       <div>
-        <label class="block text-sm text-white/50 mb-1.5">Restaurant Website URL *</label>
-        <input id="ob-url" type="url" required placeholder="https://goldendragonsf.com"
+        <label class="block text-sm text-white/50 mb-1.5">Restaurant Website URL</label>
+        <input id="ob-url" type="url" placeholder="https://goldendragonsf.com"
           class="w-full px-4 py-3 rounded-xl text-sm" />
         <p class="text-xs text-white/30 mt-1.5">We'll auto-pull your name, menu, hours, and address from your website.</p>
       </div>
@@ -323,6 +323,7 @@
         Fetch My Restaurant Info →
       </button>
       <p class="text-center text-white/30 text-xs">No credit card required.</p>
+      <p class="text-center text-xs"><a href="#" onclick="goStep(2);return false;" class="text-white/30 hover:text-white/60 transition-colors">Skip — enter info manually</a></p>
     </div>
 
     <!-- ── STEP 2: Review + manual fields ── -->
@@ -493,7 +494,7 @@ function showError(msg) {
 
 async function doFetch() {
   const url = document.getElementById('ob-url').value.trim();
-  if (!url) return showError('Please enter your restaurant website URL.');
+  if (!url) { goStep(2); return; }
 
   const btn = document.getElementById('btn-fetch');
   btn.textContent = 'Fetching info…';
