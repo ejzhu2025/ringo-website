@@ -356,15 +356,37 @@
         <div>
           <label class="block text-xs text-white/40 mb-1">Menu Categories Found</label>
           <div id="rev-menu" class="text-sm text-white/60 bg-dark-3 rounded-lg px-3 py-2 min-h-8 mb-2"></div>
-          <div class="flex gap-2">
+          <!-- Menu URL fetch -->
+          <div class="flex gap-2 mb-2">
             <input id="ob-menu-url" type="url" placeholder="Menu page URL (e.g. yoursite.com/menu)"
               class="flex-1 px-3 py-2 rounded-lg text-sm" />
             <button onclick="doFetchMenu()"
               class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors whitespace-nowrap">
-              Fetch Menu
+              Fetch URL
             </button>
           </div>
-          <p class="text-xs text-white/30 mt-1">Paste your menu page URL if the menu wasn't found above.</p>
+          <!-- Upload image/PDF -->
+          <div class="flex gap-2 mb-2">
+            <label class="flex-1 flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 border border-white/10 cursor-pointer hover:bg-white/10 transition-colors text-xs text-white/50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+              <span id="ob-file-label">Upload menu image or PDF</span>
+              <input id="ob-menu-file" type="file" accept="image/*,.pdf" class="hidden" onchange="document.getElementById('ob-file-label').textContent=this.files[0]?.name||'Upload menu image or PDF'" />
+            </label>
+            <button onclick="doExtractMenuFile()"
+              class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors whitespace-nowrap">
+              Extract
+            </button>
+          </div>
+          <!-- Paste text -->
+          <div>
+            <textarea id="ob-menu-text" rows="3" placeholder="Or paste your menu text here…"
+              class="w-full px-3 py-2 rounded-lg text-sm resize-none"></textarea>
+            <button onclick="doExtractMenuText()"
+              class="mt-1 px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors">
+              Extract from text
+            </button>
+          </div>
+          <p class="text-xs text-white/30 mt-1">Use any of the options above to auto-fill the menu.</p>
         </div>
       </div>
 
@@ -561,7 +583,59 @@ async function doFetchMenu() {
     btn.textContent = 'Error';
     showError(e.message);
   } finally {
-    setTimeout(() => { btn.textContent = 'Fetch Menu'; btn.disabled = false; }, 2000);
+    setTimeout(() => { btn.textContent = 'Fetch URL'; btn.disabled = false; }, 2000);
+  }
+}
+
+function _applyExtractedMenu(menu, btn, defaultLabel) {
+  if (menu && menu.length) {
+    _fetchedData.menu = menu;
+    const cats = menu.map(c => c.category).filter(Boolean);
+    document.getElementById('rev-menu').textContent = cats.join(' · ');
+    btn.textContent = 'Done';
+  } else {
+    btn.textContent = 'No menu found';
+  }
+  setTimeout(() => { btn.textContent = defaultLabel; btn.disabled = false; }, 2000);
+}
+
+async function doExtractMenuFile() {
+  const fileInput = document.getElementById('ob-menu-file');
+  if (!fileInput.files[0]) return;
+  const btn = event.target;
+  btn.textContent = 'Extracting…';
+  btn.disabled = true;
+  try {
+    const form = new FormData();
+    form.append('file', fileInput.files[0]);
+    const res = await fetch(API + '/api/v1/onboard/extract-menu', { method: 'POST', body: form });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.detail || 'Extraction failed');
+    _applyExtractedMenu(json.menu, btn, 'Extract');
+  } catch(e) {
+    btn.textContent = 'Error';
+    showError(e.message);
+    setTimeout(() => { btn.textContent = 'Extract'; btn.disabled = false; }, 2000);
+  }
+}
+
+async function doExtractMenuText() {
+  const text = document.getElementById('ob-menu-text').value.trim();
+  if (!text) return;
+  const btn = event.target;
+  btn.textContent = 'Extracting…';
+  btn.disabled = true;
+  try {
+    const form = new FormData();
+    form.append('text', text);
+    const res = await fetch(API + '/api/v1/onboard/extract-menu', { method: 'POST', body: form });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.detail || 'Extraction failed');
+    _applyExtractedMenu(json.menu, btn, 'Extract from text');
+  } catch(e) {
+    btn.textContent = 'Error';
+    showError(e.message);
+    setTimeout(() => { btn.textContent = 'Extract from text'; btn.disabled = false; }, 2000);
   }
 }
 
