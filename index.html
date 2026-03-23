@@ -354,7 +354,16 @@
         </div>
         <div>
           <label class="block text-xs text-white/40 mb-1">Menu Categories Found</label>
-          <div id="rev-menu" class="text-sm text-white/60 bg-dark-3 rounded-lg px-3 py-2 min-h-8"></div>
+          <div id="rev-menu" class="text-sm text-white/60 bg-dark-3 rounded-lg px-3 py-2 min-h-8 mb-2"></div>
+          <div class="flex gap-2">
+            <input id="ob-menu-url" type="url" placeholder="Menu page URL (e.g. yoursite.com/menu)"
+              class="flex-1 px-3 py-2 rounded-lg text-sm" />
+            <button onclick="doFetchMenu()"
+              class="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition-colors whitespace-nowrap">
+              Fetch Menu
+            </button>
+          </div>
+          <p class="text-xs text-white/30 mt-1">Paste your menu page URL if the menu wasn't found above.</p>
         </div>
       </div>
 
@@ -374,6 +383,10 @@
           <div>
             <label class="block text-xs text-white/40 mb-1">Restaurant Phone *</label>
             <input id="ob-phone" type="tel" required placeholder="(415) 000-0000" class="w-full px-3 py-2 rounded-lg text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs text-white/40 mb-1">Your Mobile (for order/booking alerts) *</label>
+            <input id="ob-owner-phone" type="tel" required placeholder="(415) 000-0000" class="w-full px-3 py-2 rounded-lg text-sm" />
           </div>
           <div>
             <label class="block text-xs text-white/40 mb-1">Ring time before Ringo answers</label>
@@ -520,6 +533,37 @@ async function doFetch() {
   }
 }
 
+async function doFetchMenu() {
+  const url = document.getElementById('ob-menu-url').value.trim();
+  if (!url) return;
+  const btn = event.target;
+  btn.textContent = 'Fetching…';
+  btn.disabled = true;
+  try {
+    const res = await fetch(API + '/api/v1/onboard/fetch', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({source: 'website', url})
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.detail || 'Failed to fetch menu');
+    const data = json.data || {};
+    if (data.menu && data.menu.length) {
+      _fetchedData.menu = data.menu;
+      const cats = data.menu.map(c => c.category).filter(Boolean);
+      document.getElementById('rev-menu').textContent = cats.join(' · ');
+      btn.textContent = 'Done';
+    } else {
+      btn.textContent = 'No menu found';
+    }
+  } catch(e) {
+    btn.textContent = 'Error';
+    showError(e.message);
+  } finally {
+    setTimeout(() => { btn.textContent = 'Fetch Menu'; btn.disabled = false; }, 2000);
+  }
+}
+
 async function doConfirm() {
   if (!document.getElementById('ob-contact').value.trim()) return showError('Please enter your name.');
   if (!document.getElementById('ob-email').value.trim()) return showError('Please enter your email.');
@@ -544,6 +588,7 @@ async function doConfirm() {
       ring_timeout:         parseInt(document.getElementById('ob-ring').value),
       owner_name:           document.getElementById('ob-contact').value.trim(),
       owner_email:          document.getElementById('ob-email').value.trim(),
+      owner_phone:          document.getElementById('ob-owner-phone').value.trim() || null,
       website:              document.getElementById('ob-url').value.trim(),
     };
 
